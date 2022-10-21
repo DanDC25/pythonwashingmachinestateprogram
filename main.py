@@ -11,6 +11,10 @@ knob_pressed = False
 starting_time = control.millis()
 currentState = IDLE
 currentTime = 0
+        
+def onPause_until():
+    return False
+    pause_until(button_B_pressed)
 
 def Volume():
     pass
@@ -54,7 +58,7 @@ def updateSystem():
     if(currentState == IDLE):
         start_time_ms = control.millis()
         if(button_B_pressed):
-            currentTime = #stop
+            currentTime = onPause_until
         if (button_A_pressed):
             currentTime = 0
     if(currentState == WASHING):
@@ -62,6 +66,7 @@ def updateSystem():
         if(current_time_ms - start_time_ms) > 1000:
             currentTime -= 1
             start_time_ms = current_time_ms
+
 
 
 def get_knob_data():
@@ -77,9 +82,8 @@ def HeavyWash():
     
 
 def updateSystem():
+    starting_time
     button_A_pressed
     button_B_pressed
     knob_pressed
     currentTime
-    starting_time
-    
