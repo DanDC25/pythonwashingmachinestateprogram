@@ -5,6 +5,8 @@ DOOROPEN = 3
 DONE = 4
 OFF = 5
 
+
+
 button_A_pressed = False
 button_B_pressed = False
 knob_pressed = False
@@ -29,6 +31,11 @@ def Detergent(int: detergent):
     pass
 
 
+def evaluateState(state: int):
+    pass
+
+
+
 def playSound():
     for i in range(4):
         music.playTone(Note.C, music.beat(BeatFraction.Whole))
@@ -43,10 +50,8 @@ def on_button_pressed_b():
     button_B_pressed = True
     pass
 
-def knob_pressed():
-    global knob_pressed
-    knob_pressed = True
-    pass
+def TurnDegree():
+    TurnDegree = get_knob_data()
 
 input.on_button_pressed(Button.A, on_button_pressed_a)
 input.on_button_pressed(Button.B, on_button_pressed_b)
@@ -60,7 +65,8 @@ def updateSystem():
     if(currentState == IDLE):
         start_time_ms = control.millis()
         if(button_B_pressed):
-            currentTime = onPause_until
+            #select desired washingtype
+            pass
         if (button_A_pressed):
             currentTime = 0
     if(currentState == WASHING):
@@ -99,12 +105,19 @@ def HeavyWash():
     serial.write_line("Softener 10militer")
     serial.write_line("400RPM")
 
-    
+def reactToState(int: currentState):
+    if(currentState == WASHING):
+        if TurnDegree > 135:
+            HeavyWash()
+        else:
+            LightWash()
 
 
-def updateSystem():
-    starting_time
-    button_A_pressed
-    button_B_pressed
-    knob_pressed
-    currentTime
+def on_forever():
+    global currentState
+    updateSystem()
+    currentState = evaluateState(currentState)
+    reactToState(currentState)
+
+
+basic.forever(on_forever)
