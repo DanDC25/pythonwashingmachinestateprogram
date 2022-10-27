@@ -16,7 +16,7 @@ currentTime = 0
 
 def onPause_until():
     return False
-    pause_until(button_B_pressed)
+    pause_until(button_B_pressed())
 
 def Volume(int: volume):
     pass
@@ -28,10 +28,6 @@ def Softener(int: softener):
     pass
 
 def Detergent(int: detergent):
-    pass
-
-
-def evaluateState(state: int):
     pass
 
 
@@ -62,7 +58,7 @@ def updateSystem():
     global button_A_pressed
     global button_B_pressed
     
-    if(currentState == IDLE):
+    if currentState == IDLE:
         start_time_ms = control.millis()
         if(button_B_pressed):
             #select desired washingtype
@@ -74,6 +70,55 @@ def updateSystem():
         if(current_time_ms - start_time_ms) > 1000:
             currentTime -= 1
             start_time_ms = current_time_ms
+
+def evaluateState(state: int):
+    if state == IDLE:
+        if button_B_pressed:
+            return WASHING
+
+
+def reactToState(int: currentState):
+    if(currentState == WASHING):
+        if TurnDegree > 135:
+            HeavyWash()
+        else:
+            LightWash()
+        
+        basic.show_leds("""
+                # . # . #
+                # . # . #
+                # . # . #
+                # . # . #
+                . # . # .
+        """)
+
+        serial.write_line("Washing")
+
+
+
+
+    if(currentState == IDLE): 
+        basic.show_leds("""
+                . # # # .
+                . # . # .
+                . # # # .
+                . # . . .
+                . # . . .
+        """)
+        serial.write_line("Idle")
+
+    if(currentState == PAUSED):
+        basic.show_leds("""
+                . # # # .
+                . # . # .
+                . # # # .
+                . # . . .
+                . # . . .
+        """)
+        serial.write_line("Paused")
+
+    if(currentState == DONE):
+        playSound()
 
 
 
@@ -105,12 +150,7 @@ def HeavyWash():
     serial.write_line("Softener 10militer")
     serial.write_line("400RPM")
 
-def reactToState(int: currentState):
-    if(currentState == WASHING):
-        if TurnDegree > 135:
-            HeavyWash()
-        else:
-            LightWash()
+
 
 
 def on_forever():
