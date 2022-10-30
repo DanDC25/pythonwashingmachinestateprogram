@@ -35,10 +35,11 @@ def Detergent(int: detergent):
 
 
 def playSound():
-    if soundPrinted == False:
         for i in range(4):
             music.playTone(Note.C, music.beat(BeatFraction.Whole))
-        soundPrinted = True
+
+        if soundPrinted == False:
+            soundPrinted = True
 
 def on_button_pressed_a():
     global button_A_pressed
@@ -76,7 +77,7 @@ def evaluateState(state: int):
         if (button_A_pressed):
             currentTime = 0
             return DONE
-    if(currentState == WASHING):
+    if currentState == WASHING:
         current_time_ms = control.millis()
         if(current_time_ms - start_time_ms) > 1000:
             currentTime -= 1
@@ -84,6 +85,15 @@ def evaluateState(state: int):
             return DONE
         if (button_A_pressed):
             return DONE
+        if (button_B_pressed):
+            return PAUSED
+    if currentState == PAUSED:
+        if (button_A_pressed):
+            return DONE
+    if currentState == DONE:
+        if (button_A_pressed):
+            return IDLE
+    
     return state
 
 
@@ -130,13 +140,25 @@ def reactToState(int: currentState):
 
     if(currentState == DONE):
         basic.show_leds("""
-            # # # . .
+                # # # . .
                 # . . # .
                 # . . # .
                 # . . # .
                 # # # . .
         """)
         playSound()
+        serial.write_line("Done")
+
+
+    if (currentState == OFF):
+        for i in range(4):
+            basic.show_leds("""
+                . # # # #
+                . # . . #
+                . # . . #
+                . # . . #
+                . # # # #
+        """)
 
 
 

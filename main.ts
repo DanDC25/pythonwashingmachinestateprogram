@@ -31,10 +31,10 @@ function Detergent(int: number) {
 
 function playSound() {
     let soundPrinted: boolean;
+    for (let i = 0; i < 4; i++) {
+        music.playTone(Note.C, music.beat(BeatFraction.Whole))
+    }
     if (soundPrinted == false) {
-        for (let i = 0; i < 4; i++) {
-            music.playTone(Note.C, music.beat(BeatFraction.Whole))
-        }
         soundPrinted = true
     }
     
@@ -95,6 +95,24 @@ function evaluateState(state: number): number {
             return DONE
         }
         
+        if (button_B_pressed) {
+            return PAUSED
+        }
+        
+    }
+    
+    if (currentState == PAUSED) {
+        if (button_A_pressed) {
+            return DONE
+        }
+        
+    }
+    
+    if (currentState == DONE) {
+        if (button_A_pressed) {
+            return IDLE
+        }
+        
     }
     
     return state
@@ -142,13 +160,26 @@ function reactToState(int: number) {
     
     if (currentState == DONE) {
         basic.showLeds(`
-            # # # . .
+                # # # . .
                 # . . # .
                 # . . # .
                 # . . # .
                 # # # . .
         `)
         playSound()
+        serial.writeLine("Done")
+    }
+    
+    if (currentState == OFF) {
+        for (let i = 0; i < 4; i++) {
+            basic.showLeds(`
+                . # # # #
+                . # . . #
+                . # . . #
+                . # . . #
+                . # # # #
+        `)
+        }
     }
     
 }
