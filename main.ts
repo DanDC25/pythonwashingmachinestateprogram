@@ -67,18 +67,19 @@ function updateSystem() {
 }
 
 function evaluateState(state: number): number {
-    let start_time_ms: number;
+    let starting_time: number;
     let currentTime: number;
     let current_time_ms: number;
+    let start_time_ms: number;
     if (currentState == IDLE) {
-        start_time_ms = control.millis()
+        starting_time = control.millis()
         if (button_B_pressed) {
             return WASHING
         }
         
         if (button_A_pressed) {
             currentTime = 0
-            return DONE
+            return OFF
         }
         
     }
@@ -109,6 +110,13 @@ function evaluateState(state: number): number {
     }
     
     if (currentState == DONE) {
+        if (button_A_pressed) {
+            return IDLE
+        }
+        
+    }
+    
+    if (currentState == OFF) {
         if (button_A_pressed) {
             return IDLE
         }
@@ -168,18 +176,11 @@ function reactToState(int: number) {
         `)
         playSound()
         serial.writeLine("Done")
+        basic.pause(5000)
     }
     
     if (currentState == OFF) {
-        for (let i = 0; i < 4; i++) {
-            basic.showLeds(`
-                . # # # #
-                . # . . #
-                . # . . #
-                . # . . #
-                . # # # #
-        `)
-        }
+        basic.clearScreen()
     }
     
 }

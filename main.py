@@ -71,12 +71,12 @@ def updateSystem():
 
 def evaluateState(state: int):
     if currentState == IDLE:
-        start_time_ms = control.millis()
+        starting_time = control.millis()
         if(button_B_pressed):
             return WASHING
         if (button_A_pressed):
             currentTime = 0
-            return DONE
+            return OFF
     if currentState == WASHING:
         current_time_ms = control.millis()
         if(current_time_ms - start_time_ms) > 1000:
@@ -93,6 +93,10 @@ def evaluateState(state: int):
     if currentState == DONE:
         if (button_A_pressed):
             return IDLE
+    if currentState == OFF:
+        if (button_A_pressed):
+            return IDLE
+
     
     return state
 
@@ -148,17 +152,12 @@ def reactToState(int: currentState):
         """)
         playSound()
         serial.write_line("Done")
+        basic.pause(5000) 
+
 
 
     if (currentState == OFF):
-        for i in range(4):
-            basic.show_leds("""
-                . # # # #
-                . # . . #
-                . # . . #
-                . # . . #
-                . # # # #
-        """)
+        basic.clear_screen()
 
 
 
