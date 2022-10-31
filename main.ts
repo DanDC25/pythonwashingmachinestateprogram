@@ -71,13 +71,17 @@ function evaluateState(state: number): number {
     let currentTime: number;
     let current_time_ms: number;
     let start_time_ms: number;
+    
+    
     if (currentState == IDLE) {
         starting_time = control.millis()
         if (button_B_pressed) {
+            button_B_pressed = false
             return WASHING
         }
         
         if (button_A_pressed) {
+            button_A_pressed = false
             currentTime = 0
             return OFF
         }
@@ -86,17 +90,18 @@ function evaluateState(state: number): number {
     
     if (currentState == WASHING) {
         current_time_ms = control.millis()
-        if (current_time_ms - start_time_ms > 1000) {
-            currentTime -= 1
+        while (current_time_ms - start_time_ms > 1000) {
+            current_time_ms -= 1
             start_time_ms = current_time_ms
             return DONE
         }
-        
         if (button_A_pressed) {
+            button_A_pressed = false
             return DONE
         }
         
         if (button_B_pressed) {
+            button_B_pressed = false
             return PAUSED
         }
         
@@ -104,13 +109,20 @@ function evaluateState(state: number): number {
     
     if (currentState == PAUSED) {
         if (button_A_pressed) {
+            button_A_pressed = false
             return DONE
+        }
+        
+        if (button_B_pressed) {
+            button_B_pressed = false
+            return WASHING
         }
         
     }
     
     if (currentState == DONE) {
         if (button_A_pressed) {
+            button_A_pressed = false
             return IDLE
         }
         
@@ -118,6 +130,7 @@ function evaluateState(state: number): number {
     
     if (currentState == OFF) {
         if (button_A_pressed) {
+            button_A_pressed = false
             return IDLE
         }
         
