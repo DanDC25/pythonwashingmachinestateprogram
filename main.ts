@@ -189,7 +189,6 @@ function reactToState(int: number) {
         `)
         playSound()
         serial.writeLine("Done")
-        basic.pause(5000)
     }
     
     if (currentState == OFF) {

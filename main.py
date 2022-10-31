@@ -164,7 +164,6 @@ def reactToState(int: currentState):
         """)
         playSound()
         serial.write_line("Done")
-        basic.pause(5000)
 
 
 
